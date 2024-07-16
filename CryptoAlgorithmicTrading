@@ -1,0 +1,58 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+contract CryptoAlgorithmicTrading is Ownable {
+    // Address of the token to be traded
+    IERC20 public token;
+
+    // Trading parameters
+    uint256 public buyThreshold;
+    uint256 public sellThreshold;
+
+    // Events
+    event BuySignal(address indexed trader, uint256 amount);
+    event SellSignal(address indexed trader, uint256 amount);
+
+    // Constructor
+    constructor(address _token) {
+        token = IERC20(_token);
+        buyThreshold = 10 ether; // Example: Buy if price is below 10 ETH
+        sellThreshold = 15 ether; // Example: Sell if price is above 15 ETH
+    }
+
+    // Receive ETH payments
+    receive() external payable {}
+
+    // Buy tokens (simulated)
+    function buyTokens(uint256 amount) external onlyOwner {
+        emit BuySignal(msg.sender, amount);
+        // Simulate buying tokens (adjust balances)
+        // token.transferFrom(owner(), address(this), amount);
+    }
+
+    // Sell tokens (simulated)
+    function sellTokens(uint256 amount) external onlyOwner {
+        emit SellSignal(msg.sender, amount);
+        // Simulate selling tokens (adjust balances)
+        // token.transfer(owner(), amount);
+    }
+
+    // Adjust trading thresholds
+    function setThresholds(uint256 _buyThreshold, uint256 _sellThreshold) external onlyOwner {
+        buyThreshold = _buyThreshold;
+        sellThreshold = _sellThreshold;
+    }
+
+    // Withdraw ETH from the contract (only owner)
+    function withdrawETH() external onlyOwner {
+        payable(owner()).transfer(address(this).balance);
+    }
+
+    // Withdraw tokens from the contract (only owner)
+    function withdrawTokens(uint256 amount) external onlyOwner {
+        token.transfer(owner(), amount);
+    }
+}
